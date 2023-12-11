@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React, { FC, useEffect, useState } from "react"
-import { View, ViewStyle, TextStyle, ActivityIndicator } from "react-native"
+import { View, ViewStyle, TextStyle, ActivityIndicator, Modal, Pressable, Alert, StyleSheet, TouchableWithoutFeedback } from "react-native"
 import { Button, Screen, Text } from "../components"
 import { useAccount } from 'wagmi'
 import { colors, spacing } from "../theme"
@@ -19,9 +19,8 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
   const [isLoading, setIsLoading] = useState(false)
   const [gameState, setGameState] = useState()
   const [userState, setUserState] = useState()
-  const [joinDialog, setJoinDialog] = useState(false)
-  const [drawDialog, setDrawDialog] = useState(false)
-
+  const [isRevealVisible, setRevealVisible] = useState(false)
+  
   const getGameState = async () => {
     try {
       const response = await fetch(
@@ -55,7 +54,8 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
   }
 
   const reveal = async() => {
-    setJoinDialog(false)
+    console.log("OK Open")
+    setRevealVisible(!isRevealVisible);
   }
 
   useEffect( () => {
@@ -84,6 +84,28 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
       contentContainerStyle={$screenContentContainer}
       safeAreaEdges={["top", "bottom"]}
     >
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isRevealVisible}
+        onRequestClose={() => {
+          setRevealVisible(!isRevealVisible);
+        }}>
+          <TouchableWithoutFeedback onPress={() => setRevealVisible(false)}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Sure ?</Text>
+            <Button
+              testID="main-modal-reveal-button"
+              tx="common.yes"
+              style={$buttonAdjust}
+              preset="default"
+              onPress={() => reveal()}
+            />
+          </View>
+        </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     {isLoading 
       ? <ActivityIndicator />
       : <>
@@ -104,7 +126,7 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
         style={$button}
         preset="default"
         onPress={() => {
-          setDrawDialog(true)
+          setRevealVisible(true)
           console.log('Open Prize')
         }}
       />
@@ -130,9 +152,17 @@ const $container: ViewStyle = {
 const $button: ViewStyle = {
   alignItems: 'center',
   backgroundColor: colors.palette.neutral100,
-  borderRadius: 5,
+  borderRadius: 20,
+  elevation: 2,
   marginBottom: spacing.lg,
   width: '80%', // Adjust the width as needed
+}
+
+const $buttonAdjust: ViewStyle = {
+  alignItems: 'center',
+  backgroundColor: colors.palette.neutral100,
+  borderRadius: 20,
+  elevation: 2,
 }
 
 const $title: TextStyle = {
@@ -146,3 +176,48 @@ const $textContent: TextStyle = {
   fontSize: spacing.md,
   fontWeight: 'bold',
 }
+
+const styles = StyleSheet.create({
+  button: {
+    borderRadius: 20,
+    elevation: 2,
+    padding: 10,
+  },
+  buttonClose: {
+    backgroundColor: colors.palette.neutral100,
+  },
+  buttonOpen: {
+    backgroundColor: colors.palette.neutral100,
+  },
+  centeredView: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    marginTop: 22,
+  },
+  modalText: {
+    fontSize:spacing.lg,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalView: {
+    alignItems: 'center',
+    backgroundColor: colors.palette.neutral800,
+    borderRadius: 20,
+    elevation: 5,
+    margin: 20,
+    padding: 35,
+    shadowColor: colors.palette.neutral900,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  textStyle: {
+    color: colors.palette.primary100,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});
