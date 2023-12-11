@@ -146,7 +146,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
   const $inputStyles: StyleProp<TextStyle> = [
     $inputStyle,
-    disabled && { color: colors.textDim },
+    disabled && { color: colors.palette.neutral900 },
     isRTL && { textAlign: "right" as TextStyle["textAlign"] },
     TextInputProps.multiline && { height: "auto" },
     $inputStyleOverride,
@@ -241,13 +241,14 @@ const $inputWrapperStyle: ViewStyle = {
   backgroundColor: colors.palette.neutral200,
   borderColor: colors.palette.neutral400,
   overflow: "hidden",
+  marginBottom:spacing.lg
 }
 
 const $inputStyle: TextStyle = {
   flex: 1,
   alignSelf: "stretch",
   fontFamily: typography.primary.normal,
-  color: colors.text,
+  color: colors.palette.neutral900,
   fontSize: 16,
   height: 24,
   // https://github.com/facebook/react-native/issues/21720#issuecomment-532642093

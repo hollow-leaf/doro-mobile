@@ -5,8 +5,20 @@ const en = {
     back: "Back",
   },
   welcomeScreen: {
-    appName: "FirstApp",
+    appName: "Doro",
+    welcomeText: "Welcome Doro",
     connectWallet: "Connect your wallet",
+    joinGame: "Scan QR to join a game",
+  },
+  MainScreen: {
+    appName: "Doro",
+    draw: "Draw",
+    reveal: "Reveal"
+  },
+  DrawScreen: {
+    appName: "Doro",
+    draw: "Doro !!",
+    cancel: "Cancel"
   },
   errorScreen: {
     title: "Something went wrong!",

@@ -7,9 +7,9 @@
     "scheme": "doro",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/Odulgit-Logo.png",
+    "icon": "./assets/images/Doro.png",
     "splash": {
-      "image": "./assets/images/Odulgit-Logo.png",
+      "image": "./assets/images/Doro.png",
       "resizeMode": "contain",
       "backgroundColor": "#191015"
     },
@@ -24,11 +24,11 @@
       "icon": "./assets/images/app-icon-android-legacy.png",
       "package": "com.doro",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/Odulgit-Logo-foreground.png",
+        "foregroundImage": "./assets/images/tobi-foreground.png",
         "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
       },
       "splash": {
-        "image": "./assets/images/Odulgit-Logo.png",
+        "image": "./assets/images/Doro.png",
         "resizeMode": "contain",
         "backgroundColor": "#191015"
       }
@@ -38,8 +38,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.doro",
       "splash": {
-        "image": "./assets/images/Odulgit-Logo.png",
-        "tabletImage": "./assets/images/Odulgit-Logo-tablet.png",
+        "image": "./assets/images/Doro.png",
+        "tabletImage": "./assets/images/tobi-tablet.png",
         "resizeMode": "contain",
         "backgroundColor": "#191015"
       }
@@ -47,7 +47,7 @@
     "web": {
       "favicon": "./assets/images/app-icon-web-favicon.png",
       "splash": {
-        "image": "./assets/images/Odulgit-Logo.png",
+        "image": "./assets/images/Doro.png",
         "resizeMode": "contain",
         "backgroundColor": "#191015"
       },
