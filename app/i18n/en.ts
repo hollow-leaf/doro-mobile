@@ -3,6 +3,10 @@ const en = {
     ok: "OK!",
     cancel: "Cancel",
     back: "Back",
+    invalid: "Invalid Input",
+    retry: "Retry",
+    yes: "Yes",
+    no: "No"
   },
   welcomeScreen: {
     appName: "Doro",
@@ -18,7 +22,7 @@ const en = {
   DrawScreen: {
     appName: "Doro",
     draw: "Doro !!",
-    cancel: "Cancel"
+    cancel: "Cancel",
   },
   errorScreen: {
     title: "Something went wrong!",

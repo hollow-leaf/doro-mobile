@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React, { FC, useEffect, useState } from "react"
-import { View, ViewStyle, TextStyle, ActivityIndicator } from "react-native"
+import { View, ViewStyle, TextStyle, ActivityIndicator, Pressable, Modal, StyleSheet } from "react-native"
 import { Button, Text, TextField, Screen } from "../components"
 import { useAccount } from 'wagmi'
 import { AppStackScreenProps } from "../navigators"
@@ -18,7 +18,18 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
   const [isLoading, setIsLoading] = useState(false)
   const [gameState, setGameState] = useState()
   const [userState, setUserState] = useState()
-  const [value, onChangeText] = useState('Useless Placeholder');
+  const [value, onChangeText] = useState<string | undefined>();
+  const [isInvalidVisible, setInvalidVisible] = useState(false)
+  
+  
+  const handleTextChange = (text: string) => {
+    const num = parseInt(text, 10);
+    if (!isNaN(num) && num >= 0 && num <= 1000) {
+      onChangeText(text);
+    }else{
+      setInvalidVisible(true)
+    }
+  };
 
   const getGameState = async () => {
     try {
@@ -49,7 +60,19 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
   }
 
   const draw = async() => {
-    console.log(`draw ${ value }!!`)
+    setIsLoading(true)
+    if(value){
+    const num = parseInt(value, 10);
+      if (!isNaN(num) && num >= 0 && num <= 1000) {
+        console.log(`draw ${ value }!!`)
+      }else{
+        setInvalidVisible(true)
+      }
+    }else{
+      setInvalidVisible(true)
+    }
+    setIsLoading(false)
+
   }
 
   return (
@@ -58,6 +81,26 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
       contentContainerStyle={$screenContentContainer}
       safeAreaEdges={["top", "bottom"]}
     >
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isInvalidVisible}
+        onRequestClose={() => {
+          setInvalidVisible(!isInvalidVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText} tx="common.invalid"/>
+            <Button
+              testID="draw-invalid-button"
+              tx="common.retry"
+              style={$buttonAdjust}
+              preset="default"
+              onPress={() => setInvalidVisible(!isInvalidVisible)}
+            />
+          </View>
+        </View>
+      </Modal>
       {isLoading 
       ? <ActivityIndicator />
       : <>
@@ -66,8 +109,8 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
       </View>
         <TextField
         keyboardType="number-pad"
-        onChangeText={onChangeText}
-        placeholder="Input Shuffle Number"
+        onChangeText={onChangeText} 
+        placeholder="Input Shuffle Number 0 - 1000"
         />
       <View style={$container}>
 
@@ -107,10 +150,24 @@ const $container: ViewStyle = {
 
 const $button: ViewStyle = {
   alignItems: 'center',
+  alignContent: 'center',
+  borderRadius: 20,
   backgroundColor: colors.palette.neutral100,
-  borderRadius: 5,
   marginBottom: spacing.lg,
-  width: '80%', // Adjust the width as needed
+  width: '80%',
+}
+
+const $buttonAdjust: ViewStyle = {
+  alignItems: 'center',
+  alignContent: 'center',
+  borderRadius: 20,
+  backgroundColor: colors.palette.neutral100,
+}
+
+const $buttonText: TextStyle = {
+  color: colors.palette.primary100,
+    fontWeight: 'bold',
+    textAlign: 'center',
 }
 
 const $title: TextStyle = {
@@ -118,6 +175,51 @@ const $title: TextStyle = {
   fontSize: spacing.lg,
   fontWeight: 'bold',
 }
+
+const styles = StyleSheet.create({
+  button: {
+    borderRadius: 20,
+    elevation: 2,
+    padding: 10,
+  },
+  buttonClose: {
+    backgroundColor: colors.palette.neutral100,
+  },
+  buttonOpen: {
+    backgroundColor: colors.palette.neutral100,
+  },
+  centeredView: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    marginTop: 22,
+  },
+  modalText: {
+    fontSize:spacing.lg,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalView: {
+    alignItems: 'center',
+    backgroundColor: colors.palette.neutral800,
+    borderRadius: 20,
+    elevation: 5,
+    margin: 20,
+    padding: 35,
+    shadowColor: colors.palette.neutral900,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  textStyle: {
+    color: colors.palette.primary100,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});
 
 
 
