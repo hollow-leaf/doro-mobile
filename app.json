@@ -1,0 +1,77 @@
+{
+  "name": "doro",
+  "displayName": "doro",
+  "expo": {
+    "name": "doro",
+    "slug": "doro",
+    "scheme": "doro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/Odulgit-Logo.png",
+    "splash": {
+      "image": "./assets/images/Odulgit-Logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#191015"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "jsEngine": "hermes",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "icon": "./assets/images/app-icon-android-legacy.png",
+      "package": "com.doro",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/Odulgit-Logo-foreground.png",
+        "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
+      },
+      "splash": {
+        "image": "./assets/images/Odulgit-Logo.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#191015"
+      }
+    },
+    "ios": {
+      "icon": "./assets/images/app-icon-ios.png",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.doro",
+      "splash": {
+        "image": "./assets/images/Odulgit-Logo.png",
+        "tabletImage": "./assets/images/Odulgit-Logo-tablet.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#191015"
+      }
+    },
+    "web": {
+      "favicon": "./assets/images/app-icon-web-favicon.png",
+      "splash": {
+        "image": "./assets/images/Odulgit-Logo.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#191015"
+      },
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-localization",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "newArchEnabled": false
+          },
+          "android": {
+            "newArchEnabled": false
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "tsconfigPaths": true
+    }
+  },
+  "ignite": {
+    "version": "9.1.0"
+  }
+}
