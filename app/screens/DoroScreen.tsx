@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React, { FC, useEffect, useState } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, StyleSheet } from "react-native"
+import { Image, ImageStyle, TextStyle, View, ViewStyle, StyleSheet, Modal, ActivityIndicator } from "react-native"
 import {
   Text,
   Button,
@@ -24,8 +24,10 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
 ) {
   const { navigation } = _props
   const {address, isConnected} = useAccount()
+  const [isLoading, setIsLoading] = useState(false)
   const [gameId, onChangeText] = useState<string | undefined>();
-  
+  const [isDemoFinishedVisible, setDemoFinishedVisible] = useState<boolean>(false);
+
   function goMain() {
     navigation.navigate("Main", { gameId })
   }
@@ -49,8 +51,46 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
     });
   }
 
+  const demo = async () => {
+    setIsLoading(true)
+    axios.get(`${baseUrl}/test`, {
+      timeout: 600000,
+    })
+    .then(function (response) {
+      console.log(response.data)
+      setIsLoading(false)
+      setDemoFinishedVisible(true)
+    })
+    .catch(function (error) {
+      setIsLoading(false)
+      setDemoFinishedVisible(true)
+      console.log(error);
+    });
+  }
+
   return (
     <View style={$container}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isDemoFinishedVisible}
+        onRequestClose={() => {
+          setDemoFinishedVisible(!isDemoFinishedVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText} tx="common.finished"/>
+            <Button
+              testID="doro-ok-button"
+              tx="common.ok"
+              style={$buttonAdjust}
+              preset="default"
+              onPress={() => setDemoFinishedVisible(!isDemoFinishedVisible)}
+            />
+          </View>
+        </View>
+      </Modal>
+
       <View style={$topContainer}>
         <Image style={$doroLogo} source={appLogo} resizeMode="contain" />
         <Text
@@ -59,6 +99,9 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
           tx="doroScreen.doroText"
           preset="heading"
         />
+      {isLoading 
+      ? <ActivityIndicator />
+       : <>
         <View style={styles.wrappW3Button}>
           <W3mButton/>
         </View>
@@ -77,9 +120,18 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
             preset="default"
             onPress={() => joinGame()}
           />
+          <Button
+            testID="doro-demo-button"
+            tx="doroScreen.demo"
+            style={$button}
+            preset="default"
+            onPress={() => demo()}
+          />
         </View>
         </>
         : null}
+        </>
+      }
       </View>
     </View>
   )
@@ -107,6 +159,13 @@ const $button: ViewStyle = {
   width: '60%',
 }
 
+const $buttonAdjust: ViewStyle = {
+  alignItems: 'center',
+  alignContent: 'center',
+  borderRadius: 20,
+  backgroundColor: colors.palette.neutral100,
+}
+
 const $doroLogo: ImageStyle = {
   height: 88,
   width: "100%",
@@ -119,8 +178,55 @@ const $doroHeading: TextStyle = {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    borderRadius: 20,
+    elevation: 2,
+    padding: 10,
+  },
+  buttonClose: {
+    backgroundColor: colors.palette.neutral100,
+  },
+  buttonOpen: {
+    backgroundColor: colors.palette.neutral100,
+  },
+  centeredView: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    marginTop: 22,
+  },
   joinContainer:{
     alignItems: 'center',
+  },
+  modalContent: {
+    fontSize:spacing.md,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalText: {
+    fontSize:spacing.lg,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  modalView: {
+    alignItems: 'center',
+    backgroundColor: colors.palette.neutral800,
+    borderRadius: 20,
+    elevation: 5,
+    margin: 20,
+    padding: 35,
+    shadowColor: colors.palette.neutral900,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  textStyle: {
+    color: colors.palette.primary100,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   wrappW3Button: {
     marginBottom: spacing.lg,
