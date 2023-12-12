@@ -48,7 +48,8 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
         user_address: address
       })
       .then(function (response) {
-        setUserState(JSON.parse(response.data))
+        console.log(response.data)
+        setUserState(response.data)
         setIsLoading(false);
       })
       .catch(function (error) {
@@ -59,7 +60,7 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
     }
   };
 
-  function goDoro() {
+  const goDoro = () => {
     navigation.navigate("Doro")
   }
 
@@ -68,7 +69,19 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
   }
 
   const reveal = async() => {
+    setIsLoading(true);
     console.log("OK Open")
+    axios.post(`${baseUrl}/reveal/${params.gameId}`, {
+      user_address: address
+    })
+    .then(function (response) {
+      console.log(response.data)
+      setUserState(response.data)
+      setIsLoading(false);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
     setRevealVisible(!isRevealVisible);
   }
 

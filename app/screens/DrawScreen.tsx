@@ -17,12 +17,13 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
   const { address, isConnected } = useAccount()
   const { navigation } = _props
 
-  const [refreshing, setRefreshing] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [gameState, setGameState] = useState()
   const [userState, setUserState] = useState()
   const [value, onChangeText] = useState<string | undefined>();
   const [isInvalidVisible, setInvalidVisible] = useState(false)
+  const [isSuccessVisible, setSuccessVisible] = useState(false)
+  const [luckyNumber, setLuckyNumber] = useState()
 
   const route = useRoute<RouteProp<DoroParamList, "Draw">>()
   const params = route.params
@@ -37,11 +38,14 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
     const num = parseInt(value, 10);
       if (!isNaN(num) && num >= 0 && num <= 1000) {
         console.log(`draw ${ value }!!`)
-        axios.post(`${baseUrl}/reveal/${params.gameId}`, {
-          user_address: address
+        axios.post(`${baseUrl}/draw/${params.gameId}`, {
+          user_address: address,
+          shuffle_number: value
         })
         .then(function (response) {
-          console.log(response);
+          console.log(response.data);
+          setLuckyNumber(response.data.draw_count)
+          setSuccessVisible(true)
         })
         .catch(function (error) {
           console.log(error);
@@ -78,6 +82,27 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
               style={$buttonAdjust}
               preset="default"
               onPress={() => setInvalidVisible(!isInvalidVisible)}
+            />
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isSuccessVisible}
+        onRequestClose={() => {
+          setSuccessVisible(!isSuccessVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText} tx="common.success"/>
+            <Text style={styles.modalContent}>Got the No.{ luckyNumber } KUJI</Text>
+            <Button
+              testID="draw-success-button"
+              tx="common.ok"
+              style={$buttonAdjust}
+              preset="default"
+              onPress={() => goMain()}
             />
           </View>
         </View>
@@ -143,12 +168,6 @@ const $buttonAdjust: ViewStyle = {
   backgroundColor: colors.palette.neutral100,
 }
 
-const $buttonText: TextStyle = {
-  color: colors.palette.primary100,
-    fontWeight: 'bold',
-    textAlign: 'center',
-}
-
 const $title: TextStyle = {
   marginBottom: spacing.lg,
   fontSize: spacing.lg,
@@ -173,9 +192,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 22,
   },
+  modalContent: {
+    fontSize:spacing.md,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
   modalText: {
     fontSize:spacing.lg,
-    marginBottom: 15,
+    marginBottom: 10,
     textAlign: 'center',
   },
   modalView: {
