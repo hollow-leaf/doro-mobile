@@ -1,6 +1,9 @@
 {
   "name": "doro",
   "displayName": "doro",
+  "android": {
+    "package": "dev.hollowleaf.doro"
+  },
   "expo": {
     "name": "doro",
     "slug": "doro",
@@ -21,8 +24,9 @@
       "**/*"
     ],
     "android": {
+      "package": "dev.hollowleaf.doro",
       "icon": "./assets/images/app-icon-android-legacy.png",
-      "package": "com.doro",
+      "versionCode": "0.0.0",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/tobi-foreground.png",
         "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
@@ -52,6 +56,13 @@
         "backgroundColor": "#191015"
       },
       "bundler": "metro"
+    },
+    "expo": {
+      "extra": {
+        "eas": {
+          "projectId": "bdf6640b-480a-4c35-a7a7-fa15bc7eb82f"
+        }
+      }
     },
     "plugins": [
       "expo-localization",

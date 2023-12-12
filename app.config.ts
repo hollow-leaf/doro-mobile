@@ -17,6 +17,9 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
 
   return {
     ...config,
+    android: {
+      package: "dev.hollowleaf.doro",
+    },
     plugins: [
       ...existingPlugins,
       require("./plugins/withSplashScreen").withSplashScreen,

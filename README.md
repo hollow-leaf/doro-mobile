@@ -10,3 +10,9 @@
 
 ### Related Repository (Intro and System Architechure are here!!)
 - [hollow=leaf/doro](https://github.com/hollow-leaf/doro)
+
+### Build from source
+```
+npm install -g eas-cli
+pnpm build:android:prod
+```
