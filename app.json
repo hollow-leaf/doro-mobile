@@ -5,7 +5,7 @@
     "name": "doro",
     "slug": "doro",
     "scheme": "doro",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/Doro.png",
     "splash": {
@@ -22,7 +22,6 @@
     ],
     "android": {
       "package": "dev.hollowleaf.doro",
-      "buildType": "apk",
       "icon": "./assets/images/Doro.png",
       "versionCode": 1,
       "adaptiveIcon": {
