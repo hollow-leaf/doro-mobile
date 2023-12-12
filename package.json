@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
+  "license":"Apache-2.0",
   "scripts": {
     "compile": "tsc --noEmit -p . --pretty",
     "format": "prettier --write \"app/**/*.{js,jsx,json,md,ts,tsx}\"",
