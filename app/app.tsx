@@ -64,6 +64,8 @@ createWeb3Modal({
   wagmiConfig
 })
 
+export const baseUrl = "http://34.220.164.232:8080"
+
 // Web linking configuration
 const prefix = Linking.createURL("/")
 const config = {
@@ -71,7 +73,7 @@ const config = {
     Login: {
       path: "",
     },
-    Welcome: "welcome",
+    Doro: "doro",
     Demo: {
       screens: {
         DemoShowroom: {

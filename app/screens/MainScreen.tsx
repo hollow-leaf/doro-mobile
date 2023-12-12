@@ -1,56 +1,70 @@
 import { observer } from "mobx-react-lite"
 import React, { FC, useEffect, useState } from "react"
-import { View, ViewStyle, TextStyle, ActivityIndicator, Modal, Pressable, Alert, StyleSheet, TouchableWithoutFeedback } from "react-native"
+import { View, ViewStyle, TextStyle, ActivityIndicator, Modal, StyleSheet, TouchableWithoutFeedback } from "react-native"
 import { Button, Screen, Text } from "../components"
 import { useAccount } from 'wagmi'
 import { colors, spacing } from "../theme"
 import { W3mButton } from "@web3modal/wagmi-react-native"
 import { AppStackScreenProps } from "../navigators"
+import { baseUrl } from '../app'
+import { RouteProp, useRoute } from "@react-navigation/native"
+import { DoroParamList } from "../navigators/DoroNavigator"
+import axios from 'axios'
 
 interface MainScreenProps extends AppStackScreenProps<"Main"> {}
 
 export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_props) {
-  console.log("Main Screen")
-  
   const { address, isConnected } = useAccount()
   const { navigation } = _props
 
-  const [refreshing, setRefreshing] = useState(false)
+  const route = useRoute<RouteProp<DoroParamList, "Main">>()
+  const params = route.params
+
   const [isLoading, setIsLoading] = useState(false)
-  const [gameState, setGameState] = useState()
+  const [gameState, setGameState] = useState<any>()
   const [userState, setUserState] = useState()
   const [isRevealVisible, setRevealVisible] = useState(false)
   
-  const getGameState = async () => {
+  const getGameState = async (gameId : string) => {
+    setIsLoading(true);
     try {
-      const response = await fetch(
-        'https://reactnative.dev/movies.json',
-      );
-      const json = await response.json();
-      return json.gameState;
+      fetch(`${baseUrl}/get_game/${gameId}`)
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (myJson) {
+          setGameState(myJson)
+          setIsLoading(false);
+        });
     } catch (error) {
       console.error(error);
     }
   };
 
-  const getUserState = async (address : string) => {
+  const getUserState = async (gameId : string, address : string) => {
     try {
-      const response = await fetch(
-        `https://reactnative.dev/${address}`,
-      );
-      const json = await response.json();
-      return json.userState;
+      setIsLoading(true);
+      axios.post(`${baseUrl}/get_game_user/${gameId}`, {
+        user_address: address
+      })
+      .then(function (response) {
+        setUserState(JSON.parse(response.data))
+        setIsLoading(false);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     } catch (error) {
       console.error(error);
     }
   };
 
-  function goWelcome() {
-    navigation.navigate("Welcome")
+  function goDoro() {
+    navigation.navigate("Doro")
   }
 
-  const draw = async() => {
-    navigation.navigate("Draw")
+  const goDraw = () => {
+    navigation.navigate("Draw", { gameId: params.gameId })
   }
 
   const reveal = async() => {
@@ -60,21 +74,21 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
 
   useEffect( () => {
     const fetchData = async () => {
-      setGameState(await getGameState());
-      if (address) setUserState(await getUserState(address));
+      await getGameState(params.gameId as string)
+      if (address) await getUserState(params.gameId as string, address)
     };
-    setIsLoading(true)
-    console.log(isLoading)
     fetchData()
-    setIsLoading(false)
-    console.log(isLoading)
-  }, [])
+  }, [params.gameId])
+
+  useEffect(() => {
+    console.log(gameState)
+  }, [gameState])
 
   useEffect(() => {
     if (!isConnected) {
       // Perform the navigation to go back if not connected
       console.log("Not connected, navigating back to Welcome screen");
-      goWelcome()
+      goDoro()
     }
   }, [isConnected]);
 
@@ -110,24 +124,42 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
       ? <ActivityIndicator />
       : <>
       <View style={$container}>
-        <Text style={$title}>Doro</Text>
-        <Text style={$textContent}>JOINED 3 / 10</Text>
-      <W3mButton/>
+        <Text style={$title} tx={"common.appName"}/>
+        {
+          gameState
+        ?<>
+          <Text style={$textContent}>GAME ID : {gameState.game_id}</Text>
+          <Text style={$textContent}>JOINED {gameState.draw_count} / {gameState.max}</Text>
+        </>
+        :<Text style={$textContent}>JOINED 0 / 0</Text>
+        }
+        <View style={styles.wrappW3Button}>
+          <W3mButton/>
+        </View>
       <Button
         testID="main-draw-button"
-        tx="MainScreen.draw"
+        tx="mainScreen.draw"
         style={$button}
         preset="default"
-        onPress={() => draw()}
+        onPress={() => goDraw()}
       />
       <Button
         testID="main-reveal-button"
-        tx="MainScreen.reveal"
+        tx="mainScreen.reveal"
         style={$button}
         preset="default"
         onPress={() => {
           setRevealVisible(true)
           console.log('Open Prize')
+        }}
+      />
+      <Button
+        testID="main-leave-button"
+        tx="mainScreen.leave"
+        style={$button}
+        preset="default"
+        onPress={() => {
+          goDoro() 
         }}
       />
       </View>
@@ -155,7 +187,7 @@ const $button: ViewStyle = {
   borderRadius: 20,
   elevation: 2,
   marginBottom: spacing.lg,
-  width: '80%', // Adjust the width as needed
+  width: '60%', // Adjust the width as needed
 }
 
 const $buttonAdjust: ViewStyle = {
@@ -219,5 +251,8 @@ const styles = StyleSheet.create({
     color: colors.palette.primary100,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  wrappW3Button: {
+    marginBottom: spacing.lg,
   },
 });
