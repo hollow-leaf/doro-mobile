@@ -5,12 +5,15 @@ import { Button, Text, TextField, Screen } from "../components"
 import { useAccount } from 'wagmi'
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
+import { baseUrl } from '../app'
+import { RouteProp, useRoute } from "@react-navigation/native"
+import { DoroParamList } from "../navigators/DoroNavigator"
+import axios from 'axios'
+
 
 interface DrawScreenProps extends AppStackScreenProps<"Draw"> {}
 
-export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_props) {
-  console.log("Draw Screen")
-  
+export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_props) {  
   const { address, isConnected } = useAccount()
   const { navigation } = _props
 
@@ -20,43 +23,12 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
   const [userState, setUserState] = useState()
   const [value, onChangeText] = useState<string | undefined>();
   const [isInvalidVisible, setInvalidVisible] = useState(false)
-  
-  
-  const handleTextChange = (text: string) => {
-    const num = parseInt(text, 10);
-    if (!isNaN(num) && num >= 0 && num <= 1000) {
-      onChangeText(text);
-    }else{
-      setInvalidVisible(true)
-    }
-  };
 
-  const getGameState = async () => {
-    try {
-      const response = await fetch(
-        'https://reactnative.dev/movies.json',
-      );
-      const json = await response.json();
-      return json.gameState;
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const route = useRoute<RouteProp<DoroParamList, "Draw">>()
+  const params = route.params
 
-  const getUserState = async (address : string) => {
-    try {
-      const response = await fetch(
-        `https://reactnative.dev/${address}`,
-      );
-      const json = await response.json();
-      return json.userState;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  function goBack() {
-    navigation.navigate("Main")
+  function goMain() {
+    navigation.navigate("Main", { gameId: params.gameId })
   }
 
   const draw = async() => {
@@ -65,6 +37,15 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
     const num = parseInt(value, 10);
       if (!isNaN(num) && num >= 0 && num <= 1000) {
         console.log(`draw ${ value }!!`)
+        axios.post(`${baseUrl}/reveal/${params.gameId}`, {
+          user_address: address
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
       }else{
         setInvalidVisible(true)
       }
@@ -113,23 +94,21 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
         placeholder="Input Shuffle Number 0 - 1000"
         />
       <View style={$container}>
-
       <Button
         testID="draw-draw-button"
-        tx="DrawScreen.draw"
+        tx="drawScreen.draw"
         style={$button}
         preset="default"
         onPress={() => draw()}
       />
       <Button
         testID="draw-cancel-button"
-        tx="DrawScreen.cancel"
+        tx="drawScreen.cancel"
         style={$button}
         preset="default"
-        onPress={() => goBack()}
+        onPress={() => goMain()}
       />
       </View>
-
       </>
       }
     </Screen>
@@ -154,7 +133,7 @@ const $button: ViewStyle = {
   borderRadius: 20,
   backgroundColor: colors.palette.neutral100,
   marginBottom: spacing.lg,
-  width: '80%',
+  width: '60%',
 }
 
 const $buttonAdjust: ViewStyle = {

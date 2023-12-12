@@ -6,21 +6,20 @@ const en = {
     invalid: "Invalid Input",
     retry: "Retry",
     yes: "Yes",
-    no: "No"
+    no: "No",
+    appName: "Doro"
   },
-  welcomeScreen: {
-    appName: "Doro",
-    welcomeText: "Welcome Doro",
+  doroScreen: {
+    doroText: "Welcome Doro",
     connectWallet: "Connect your wallet",
-    joinGame: "Scan QR to join a game",
+    joinGame: "Join",
   },
-  MainScreen: {
-    appName: "Doro",
+  mainScreen: {
     draw: "Draw",
-    reveal: "Reveal"
+    reveal: "Reveal",
+    leave: "Leave"
   },
-  DrawScreen: {
-    appName: "Doro",
+  drawScreen: {
     draw: "Doro !!",
     cancel: "Cancel",
   },
