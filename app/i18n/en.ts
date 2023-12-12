@@ -7,7 +7,8 @@ const en = {
     retry: "Retry",
     yes: "Yes",
     no: "No",
-    appName: "Doro"
+    appName: "Doro",
+    success: "Success"
   },
   doroScreen: {
     doroText: "Welcome Doro",
