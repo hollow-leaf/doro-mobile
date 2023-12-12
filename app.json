@@ -1,14 +1,11 @@
 {
   "name": "doro",
   "displayName": "doro",
-  "android": {
-    "package": "dev.hollowleaf.doro"
-  },
   "expo": {
     "name": "doro",
     "slug": "doro",
     "scheme": "doro",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/Doro.png",
     "splash": {
@@ -25,10 +22,11 @@
     ],
     "android": {
       "package": "dev.hollowleaf.doro",
-      "icon": "./assets/images/app-icon-android-legacy.png",
-      "versionCode": "0.0.0",
+      "buildType": "apk",
+      "icon": "./assets/images/Doro.png",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/tobi-foreground.png",
+        "foregroundImage": "./assets/images/Doro.png",
         "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
       },
       "splash": {
@@ -57,11 +55,9 @@
       },
       "bundler": "metro"
     },
-    "expo": {
-      "extra": {
-        "eas": {
-          "projectId": "bdf6640b-480a-4c35-a7a7-fa15bc7eb82f"
-        }
+    "extra": {
+      "eas": {
+        "projectId": "bd8373c0-f802-4c78-90da-3b96726f810c"
       }
     },
     "plugins": [
