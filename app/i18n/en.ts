@@ -8,12 +8,13 @@ const en = {
     yes: "Yes",
     no: "No",
     appName: "Doro",
-    success: "Success"
+    finished:"Finished"
   },
   doroScreen: {
     doroText: "Welcome Doro",
     connectWallet: "Connect your wallet",
     joinGame: "Join",
+    demo: "Demo"
   },
   mainScreen: {
     draw: "Draw",

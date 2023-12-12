@@ -121,10 +121,10 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
           <TouchableWithoutFeedback onPress={() => setRevealVisible(false)}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Sure ?</Text>
+            <Text style={styles.modalText}>Good Luck</Text>
             <Button
               testID="main-modal-reveal-button"
-              tx="common.yes"
+              tx="mainScreen.reveal"
               style={$buttonAdjust}
               preset="default"
               onPress={() => reveal()}
@@ -142,7 +142,13 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
           gameState
         ?<>
           <Text style={$textContent}>GAME ID : {gameState.game_id}</Text>
-          <Text style={$textContent}>JOINED {gameState.draw_count} / {gameState.max}</Text>
+          <Text style={$textContent}>
+            {
+              gameState.game_state === "not_start"
+              ? `NOT STARTED`
+              : `JOINED ${gameState.draw_num} / ${gameState.max}`
+            }
+          </Text>
         </>
         :<Text style={$textContent}>JOINED 0 / 0</Text>
         }
