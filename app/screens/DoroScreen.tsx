@@ -10,31 +10,32 @@ import { isRTL } from "../i18n"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
-import { W3mButton } from '@web3modal/wagmi-react-native'
 import { useAccount } from 'wagmi'
 import { baseUrl } from '../app'
 import axios from 'axios'
 
+
 const appLogo = require("../../assets/images/Doro.png")
 
-interface DoroScreenProps extends AppStackScreenProps<"Doro"> {}
+interface DoroScreenProps extends AppStackScreenProps<"Doro"> { }
 
 export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps(
   _props
 ) {
   const { navigation } = _props
-  const {address, isConnected} = useAccount()
   const [isLoading, setIsLoading] = useState(false)
+  const [isExistsWallet, setExists] = useState(false)
   const [gameId, onChangeText] = useState<string | undefined>();
   const [isDemoFinishedVisible, setDemoFinishedVisible] = useState<boolean>(false);
+
+  const [minaAddress, setMinaAddress] = useState<string>();
 
   function goMain() {
     navigation.navigate("Main", { gameId })
   }
 
   function joinGame() {
-    if(isConnected && gameId) 
-    {
+    if (gameId) {
       getMinaWallet().then(() => {
         goMain()
       })
@@ -42,13 +43,7 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
   }
 
   const getMinaWallet = async () => {
-    axios.post(`${baseUrl}/user/${address}`, {})
-    .then(function (response) {
-      console.log("My Wallet:",response.data);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    return "mina"
   }
 
   const demo = async () => {
@@ -56,16 +51,16 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
     axios.get(`${baseUrl}/test`, {
       timeout: 600000,
     })
-    .then(function (response) {
-      console.log(response.data)
-      setIsLoading(false)
-      setDemoFinishedVisible(true)
-    })
-    .catch(function (error) {
-      setIsLoading(false)
-      setDemoFinishedVisible(true)
-      console.log(error);
-    });
+      .then(function (response) {
+        console.log(response.data)
+        setIsLoading(false)
+        setDemoFinishedVisible(true)
+      })
+      .catch(function (error) {
+        setIsLoading(false)
+        setDemoFinishedVisible(true)
+        console.log(error);
+      });
   }
 
   return (
@@ -79,7 +74,7 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText} tx="common.finished"/>
+            <Text style={styles.modalText} tx="common.finished" />
             <Button
               testID="doro-ok-button"
               tx="common.ok"
@@ -99,39 +94,45 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
           tx="doroScreen.doroText"
           preset="heading"
         />
-      {isLoading 
-      ? <ActivityIndicator />
-       : <>
-        <View style={styles.wrappW3Button}>
-          <W3mButton/>
-        </View>
-        {isConnected 
-        ? <>
-            <TextField
-              keyboardType="number-pad"
-              onChangeText={onChangeText} 
-              placeholder="Input Game ID"
-              />
-              <View style={styles.joinContainer}>
-            <Button
-            testID="doro-join-button"
-            tx="doroScreen.joinGame"
-            style={$button}
-            preset="default"
-            onPress={() => joinGame()}
-          />
-          <Button
-            testID="doro-demo-button"
-            tx="doroScreen.demo"
-            style={$button}
-            preset="default"
-            onPress={() => demo()}
-          />
-        </View>
-        </>
-        : null}
-        </>
-      }
+        {isLoading
+          ? <ActivityIndicator />
+          : <>
+            <View style={styles.joinContainer}>
+              <Button
+                style={$button}
+                onPress={() => joinGame()}
+              >
+                Create Account
+              </Button>
+              <Button style={$button}>Import Account</Button>
+            </View>
+            {isExistsWallet
+              ? <>
+                <TextField
+                  keyboardType="number-pad"
+                  onChangeText={onChangeText}
+                  placeholder="Input Game ID"
+                />
+                <View style={styles.joinContainer}>
+                  <Button
+                    testID="doro-join-button"
+                    tx="doroScreen.joinGame"
+                    style={$button}
+                    preset="default"
+                    onPress={() => joinGame()}
+                  />
+                  <Button
+                    testID="doro-demo-button"
+                    tx="doroScreen.demo"
+                    style={$button}
+                    preset="default"
+                    onPress={() => demo()}
+                  />
+                </View>
+              </>
+              : null}
+          </>
+        }
       </View>
     </View>
   )
@@ -195,16 +196,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 22,
   },
-  joinContainer:{
+  joinContainer: {
     alignItems: 'center',
   },
   modalContent: {
-    fontSize:spacing.md,
+    fontSize: spacing.md,
     marginBottom: 15,
     textAlign: 'center',
   },
   modalText: {
-    fontSize:spacing.lg,
+    fontSize: spacing.lg,
     marginBottom: 10,
     textAlign: 'center',
   },

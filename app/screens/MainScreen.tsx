@@ -4,14 +4,13 @@ import { View, ViewStyle, TextStyle, ActivityIndicator, Modal, StyleSheet, Touch
 import { Button, Screen, Text } from "../components"
 import { useAccount } from 'wagmi'
 import { colors, spacing } from "../theme"
-import { W3mButton } from "@web3modal/wagmi-react-native"
 import { AppStackScreenProps } from "../navigators"
 import { baseUrl } from '../app'
 import { RouteProp, useRoute } from "@react-navigation/native"
 import { DoroParamList } from "../navigators/DoroNavigator"
 import axios from 'axios'
 
-interface MainScreenProps extends AppStackScreenProps<"Main"> {}
+interface MainScreenProps extends AppStackScreenProps<"Main"> { }
 
 export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_props) {
   const { address, isConnected } = useAccount()
@@ -24,8 +23,8 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
   const [gameState, setGameState] = useState<any>()
   const [userState, setUserState] = useState()
   const [isRevealVisible, setRevealVisible] = useState(false)
-  
-  const getGameState = async (gameId : string) => {
+
+  const getGameState = async (gameId: string) => {
     setIsLoading(true);
     try {
       fetch(`${baseUrl}/get_game/${gameId}`)
@@ -41,20 +40,20 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
     }
   };
 
-  const getUserState = async (gameId : string, address : string) => {
+  const getUserState = async (gameId: string, address: string) => {
     try {
       setIsLoading(true);
       axios.post(`${baseUrl}/get_game_user/${gameId}`, {
         user_address: address
       })
-      .then(function (response) {
-        console.log(response.data)
-        setUserState(response.data)
-        setIsLoading(false);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+        .then(function (response) {
+          console.log(response.data)
+          setUserState(response.data)
+          setIsLoading(false);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     } catch (error) {
       console.error(error);
     }
@@ -68,24 +67,24 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
     navigation.navigate("Draw", { gameId: params.gameId })
   }
 
-  const reveal = async() => {
+  const reveal = async () => {
     setIsLoading(true);
     console.log("OK Open")
     axios.post(`${baseUrl}/reveal/${params.gameId}`, {
       user_address: address
     })
-    .then(function (response) {
-      console.log(response.data)
-      setUserState(response.data)
-      setIsLoading(false);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+      .then(function (response) {
+        console.log(response.data)
+        setUserState(response.data)
+        setIsLoading(false);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     setRevealVisible(!isRevealVisible);
   }
 
-  useEffect( () => {
+  useEffect(() => {
     const fetchData = async () => {
       await getGameState(params.gameId as string)
       if (address) await getUserState(params.gameId as string, address)
@@ -118,71 +117,71 @@ export const MainScreen: FC<MainScreenProps> = observer(function MainScreen(_pro
         onRequestClose={() => {
           setRevealVisible(!isRevealVisible);
         }}>
-          <TouchableWithoutFeedback onPress={() => setRevealVisible(false)}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Good Luck</Text>
-            <Button
-              testID="main-modal-reveal-button"
-              tx="mainScreen.reveal"
-              style={$buttonAdjust}
-              preset="default"
-              onPress={() => reveal()}
-            />
+        <TouchableWithoutFeedback onPress={() => setRevealVisible(false)}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Good Luck</Text>
+              <Button
+                testID="main-modal-reveal-button"
+                tx="mainScreen.reveal"
+                style={$buttonAdjust}
+                preset="default"
+                onPress={() => reveal()}
+              />
+            </View>
           </View>
-        </View>
         </TouchableWithoutFeedback>
       </Modal>
-    {isLoading 
-      ? <ActivityIndicator />
-      : <>
-      <View style={$container}>
-        <Text style={$title} tx={"common.appName"}/>
-        {
-          gameState
-        ?<>
-          <Text style={$textContent}>GAME ID : {gameState.game_id}</Text>
-          <Text style={$textContent}>
+      {isLoading
+        ? <ActivityIndicator />
+        : <>
+          <View style={$container}>
+            <Text style={$title} tx={"common.appName"} />
             {
-              gameState.game_state === "not_start"
-              ? `NOT STARTED`
-              : `JOINED ${gameState.draw_num} / ${gameState.max}`
+              gameState
+                ? <>
+                  <Text style={$textContent}>GAME ID : {gameState.game_id}</Text>
+                  <Text style={$textContent}>
+                    {
+                      gameState.game_state === "not_start"
+                        ? `NOT STARTED`
+                        : `JOINED ${gameState.draw_num} / ${gameState.max}`
+                    }
+                  </Text>
+                </>
+                : <Text style={$textContent}>JOINED 0 / 0</Text>
             }
-          </Text>
+            <View style={styles.wrappW3Button}>
+              <W3mButton />
+            </View>
+            <Button
+              testID="main-draw-button"
+              tx="mainScreen.draw"
+              style={$button}
+              preset="default"
+              onPress={() => goDraw()}
+            />
+            <Button
+              testID="main-reveal-button"
+              tx="mainScreen.reveal"
+              style={$button}
+              preset="default"
+              onPress={() => {
+                setRevealVisible(true)
+                console.log('Open Prize')
+              }}
+            />
+            <Button
+              testID="main-leave-button"
+              tx="mainScreen.leave"
+              style={$button}
+              preset="default"
+              onPress={() => {
+                goDoro()
+              }}
+            />
+          </View>
         </>
-        :<Text style={$textContent}>JOINED 0 / 0</Text>
-        }
-        <View style={styles.wrappW3Button}>
-          <W3mButton/>
-        </View>
-      <Button
-        testID="main-draw-button"
-        tx="mainScreen.draw"
-        style={$button}
-        preset="default"
-        onPress={() => goDraw()}
-      />
-      <Button
-        testID="main-reveal-button"
-        tx="mainScreen.reveal"
-        style={$button}
-        preset="default"
-        onPress={() => {
-          setRevealVisible(true)
-          console.log('Open Prize')
-        }}
-      />
-      <Button
-        testID="main-leave-button"
-        tx="mainScreen.leave"
-        style={$button}
-        preset="default"
-        onPress={() => {
-          goDoro() 
-        }}
-      />
-      </View>
-      </>
       }
     </Screen>
   );
@@ -193,11 +192,11 @@ const $screenContentContainer: ViewStyle = {
   paddingHorizontal: spacing.lg,
   backgroundColor: colors.palette.neutral900,
   flex: 1,
-  justifyContent:"center"
+  justifyContent: "center"
 }
 
 const $container: ViewStyle = {
-  alignItems:"center",
+  alignItems: "center",
 }
 
 const $button: ViewStyle = {
@@ -247,7 +246,7 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalText: {
-    fontSize:spacing.lg,
+    fontSize: spacing.lg,
     marginBottom: 15,
     textAlign: 'center',
   },

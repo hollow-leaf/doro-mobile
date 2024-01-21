@@ -31,38 +31,7 @@ import Config from "./config"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { ViewStyle } from "react-native"
 
-import '@walletconnect/react-native-compat';
-import { WagmiConfig } from 'wagmi'
-import { mainnet, polygon, arbitrum } from 'viem/chains'
-import { createWeb3Modal, defaultWagmiConfig, Web3Modal } from '@web3modal/wagmi-react-native'
-
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
-
-// 1. Get projectId at https://cloud.walletconnect.com
-const projectId = 'a4376a7614830e9187dbdcd23cece426'
-
-// 2. Create config
-const metadata = {
-  name: 'Web3Modal RN',
-  description: 'Web3Modal RN Example',
-  url: 'https://web3modal.com',
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
-  redirect: {
-    native: 'YOUR_APP_SCHEME://',
-    universal: 'YOUR_APP_UNIVERSAL_LINK.com'
-  }
-}
-
-const chains = [mainnet, polygon, arbitrum]
-
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
-
-// 3. Create modal
-createWeb3Modal({
-  projectId,
-  chains,
-  wagmiConfig
-})
 
 export const baseUrl = "http://34.220.164.232:8080"
 
@@ -129,20 +98,17 @@ function App(props: AppProps) {
 
   // otherwise, we're ready to render the app
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-        <Web3Modal />
-        <ErrorBoundary catchErrors={Config.catchErrors}>
-          <GestureHandlerRootView style={$container}>
-            <AppNavigator
-              linking={linking}
-              initialState={initialNavigationState}
-              onStateChange={onNavigationStateChange}
-            />
-          </GestureHandlerRootView>
-        </ErrorBoundary>
-      </SafeAreaProvider>
-    </WagmiConfig>
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <ErrorBoundary catchErrors={Config.catchErrors}>
+        <GestureHandlerRootView style={$container}>
+          <AppNavigator
+            linking={linking}
+            initialState={initialNavigationState}
+            onStateChange={onNavigationStateChange}
+          />
+        </GestureHandlerRootView>
+      </ErrorBoundary>
+    </SafeAreaProvider>
   )
 }
 
