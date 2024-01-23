@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React, { FC, useEffect, useState } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, StyleSheet, Modal, ActivityIndicator } from "react-native"
+import { Image, ImageStyle, TextStyle, View, ViewStyle, StyleSheet, Modal, ActivityIndicator, SafeAreaView, TextInput, Pressable } from "react-native"
 import {
   Text,
   Button,
@@ -13,7 +13,10 @@ import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 import { useAccount } from 'wagmi'
 import { baseUrl } from '../app'
 import axios from 'axios'
-
+import WebView from "react-native-webview";
+import { useWebViewMessage } from "react-native-react-bridge";
+// @ts-ignore
+import webApp from "../bridge"
 
 const appLogo = require("../../assets/images/Doro.png")
 
@@ -33,8 +36,17 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
   function goMain() {
     navigation.navigate("Main", { gameId })
   }
-
+  const [data, setData] = useState("This is React Native");
+  const { ref, onMessage, emit } = useWebViewMessage((message) => {
+    // emit sends message to React
+    //   type: event name
+    //   data: some data which will be serialized by JSON.stringify
+    if (message.type === "hello" && message.data === 123) {
+      emit({ type: "success", data: "succeeded!" });
+    }
+  });
   function joinGame() {
+    console.log(webApp)
     if (gameId) {
       getMinaWallet().then(() => {
         goMain()
@@ -62,7 +74,7 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
         console.log(error);
       });
   }
-
+  
   return (
     <View style={$container}>
       <Modal
@@ -106,6 +118,24 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
               </Button>
               <Button style={$button}>Import Account</Button>
             </View>
+          <View style={styles.joinContainer}>
+            <WebView style={{ flex: 1 }}
+              ref={ref}
+              source={{ html: webApp }}
+              onMessage={onMessage}
+              onError={console.log}
+            />
+          <Text>webApp</Text>
+          </View>
+          <Text>React Native: {data}</Text>
+           <View style={styles.joinContainer}>
+            <Button
+              onPress={() => emit({ type: "hello", data: data })}
+              style={$button}
+            >
+              send to Web
+            </Button>
+          </View>
             {isExistsWallet
               ? <>
                 <TextField
