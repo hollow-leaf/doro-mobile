@@ -11,9 +11,9 @@ import { DoroParamList } from "../navigators/DoroNavigator"
 import axios from 'axios'
 
 
-interface DrawScreenProps extends AppStackScreenProps<"Draw"> {}
+interface DrawScreenProps extends AppStackScreenProps<"Draw"> { }
 
-export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_props) {  
+export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_props) {
   const { address, isConnected } = useAccount()
   const { navigation } = _props
 
@@ -32,28 +32,28 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
     navigation.navigate("Main", { gameId: params.gameId })
   }
 
-  const draw = async() => {
+  const draw = async () => {
     setIsLoading(true)
-    if(value){
-    const num = parseInt(value, 10);
+    if (value) {
+      const num = parseInt(value, 10);
       if (!isNaN(num) && num >= 0 && num <= 1000) {
-        console.log(`draw ${ value }!!`)
+        console.log(`draw ${value}!!`)
         axios.post(`${baseUrl}/draw/${params.gameId}`, {
           user_address: address,
           shuffle_number: value
         })
-        .then(function (response) {
-          console.log(response.data);
-          setLuckyNumber(response.data.draw_count)
-          setSuccessVisible(true)
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      }else{
+          .then(function (response) {
+            console.log(response.data);
+            setLuckyNumber(response.data.draw_count)
+            setSuccessVisible(true)
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else {
         setInvalidVisible(true)
       }
-    }else{
+    } else {
       setInvalidVisible(true)
     }
     setIsLoading(false)
@@ -75,7 +75,7 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText} tx="common.invalid"/>
+            <Text style={styles.modalText} tx="common.invalid" />
             <Button
               testID="draw-invalid-button"
               tx="common.retry"
@@ -95,8 +95,8 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText} tx="common.success"/>
-            <Text style={styles.modalContent}>Got the No.{ luckyNumber } KUJI</Text>
+            <Text style={styles.modalText} tx="common.success" />
+            <Text style={styles.modalContent}>Got the No.{luckyNumber} KUJI</Text>
             <Button
               testID="draw-success-button"
               tx="common.ok"
@@ -107,34 +107,34 @@ export const DrawScreen: FC<DrawScreenProps> = observer(function DrawScreen(_pro
           </View>
         </View>
       </Modal>
-      {isLoading 
-      ? <ActivityIndicator />
-      : <>
-      <View style={$container}>
-      <Text style={$title}>Doro Info</Text>
-      </View>
-        <TextField
-        keyboardType="number-pad"
-        onChangeText={onChangeText} 
-        placeholder="Input Shuffle Number 0 - 1000"
-        />
-      <View style={$container}>
-      <Button
-        testID="draw-draw-button"
-        tx="drawScreen.draw"
-        style={$button}
-        preset="default"
-        onPress={() => draw()}
-      />
-      <Button
-        testID="draw-cancel-button"
-        tx="drawScreen.cancel"
-        style={$button}
-        preset="default"
-        onPress={() => goMain()}
-      />
-      </View>
-      </>
+      {isLoading
+        ? <ActivityIndicator />
+        : <>
+          <View style={$container}>
+            <Text style={$title}>Doro Info</Text>
+          </View>
+          <TextField
+            keyboardType="number-pad"
+            onChangeText={onChangeText}
+            placeholder="Input Shuffle Number 0 - 1000"
+          />
+          <View style={$container}>
+            <Button
+              testID="draw-draw-button"
+              tx="drawScreen.draw"
+              style={$button}
+              preset="default"
+              onPress={() => draw()}
+            />
+            <Button
+              testID="draw-cancel-button"
+              tx="drawScreen.cancel"
+              style={$button}
+              preset="default"
+              onPress={() => goMain()}
+            />
+          </View>
+        </>
       }
     </Screen>
   );
@@ -145,11 +145,11 @@ const $screenContentContainer: ViewStyle = {
   paddingHorizontal: spacing.lg,
   backgroundColor: colors.palette.neutral900,
   flex: 1,
-  justifyContent:"center"
+  justifyContent: "center"
 }
 
 const $container: ViewStyle = {
-  alignItems:"center",
+  alignItems: "center",
 }
 
 const $button: ViewStyle = {
@@ -193,12 +193,12 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalContent: {
-    fontSize:spacing.md,
+    fontSize: spacing.md,
     marginBottom: 15,
     textAlign: 'center',
   },
   modalText: {
-    fontSize:spacing.lg,
+    fontSize: spacing.lg,
     marginBottom: 10,
     textAlign: 'center',
   },

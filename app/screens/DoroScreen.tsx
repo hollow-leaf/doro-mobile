@@ -14,6 +14,8 @@ import { useAccount } from 'wagmi'
 import { baseUrl } from '../app'
 import axios from 'axios'
 
+import { generateKey, getMinaWallet } from "app/utils/mina/account"
+
 
 const appLogo = require("../../assets/images/Doro.png")
 
@@ -24,7 +26,7 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
 ) {
   const { navigation } = _props
   const [isLoading, setIsLoading] = useState(false)
-  const [isExistsWallet, setExists] = useState(false)
+  const [isExistsWallet, setExistsWalletStatus] = useState(false)
   const [gameId, onChangeText] = useState<string | undefined>();
   const [isDemoFinishedVisible, setDemoFinishedVisible] = useState<boolean>(false);
 
@@ -42,9 +44,16 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
     }
   }
 
-  const getMinaWallet = async () => {
-    return "mina"
-  }
+  useEffect(() => {
+    const checkWallet = async () => {
+      const keyPair = await getMinaWallet()
+      if (keyPair) {
+        setMinaAddress(keyPair.key)
+        setExistsWalletStatus(true)
+      }
+    }
+    checkWallet()
+  }, []);
 
   const demo = async () => {
     setIsLoading(true)
@@ -97,15 +106,6 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
         {isLoading
           ? <ActivityIndicator />
           : <>
-            <View style={styles.joinContainer}>
-              <Button
-                style={$button}
-                onPress={() => joinGame()}
-              >
-                Create Account
-              </Button>
-              <Button style={$button}>Import Account</Button>
-            </View>
             {isExistsWallet
               ? <>
                 <TextField
@@ -130,7 +130,23 @@ export const DoroScreen: FC<DoroScreenProps> = observer(function DoroScreenProps
                   />
                 </View>
               </>
-              : null}
+              : <>
+                <View style={styles.joinContainer}>
+                  <Button
+                    style={$button}
+                    onPress={() => generateKey()}
+                  >
+                    Create Account
+                  </Button>
+                  <Button
+                    style={$button}
+                    onPress={() => getMinaWallet()}
+                  >
+                    Import Account
+                  </Button>
+                </View>
+              </>
+            }
           </>
         }
       </View>
